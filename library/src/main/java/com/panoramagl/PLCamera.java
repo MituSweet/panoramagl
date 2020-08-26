@@ -18,6 +18,10 @@
 
 package com.panoramagl;
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Message;
+
 import com.panoramagl.computation.PLMath;
 import com.panoramagl.enumerations.PLCameraAnimationType;
 import com.panoramagl.ios.NSTimer;
@@ -25,6 +29,9 @@ import com.panoramagl.ios.structs.CGPoint;
 import com.panoramagl.structs.PLRange;
 import com.panoramagl.structs.PLRotation;
 import com.panoramagl.utils.PLUtils;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -76,6 +83,7 @@ public class PLCamera extends PLRenderableElementBase implements PLICamera {
         this.setReverseRotation(true);
     }
 
+
     /**
      * reset methods
      */
@@ -92,10 +100,12 @@ public class PLCamera extends PLRenderableElementBase implements PLICamera {
             this.internalStopAnimation(sender);
             this.setInternalFov(sender, mInitialFov, false, true, false);
             this.internalLookAt(sender, mInitialLookAt.pitch, mInitialLookAt.yaw, false, true, false);
-            if (mInternalListener != null)
+            if (mInternalListener != null) {
                 mInternalListener.didReset(sender, this);
-            if (mListener != null)
+            }
+            if (mListener != null) {
                 mListener.didReset(sender, this);
+            }
         }
     }
 
@@ -120,8 +130,9 @@ public class PLCamera extends PLRenderableElementBase implements PLICamera {
 
     @Override
     public void setFovEnabled(boolean isFovEnabled) {
-        if (mIsNotLocked)
+        if (mIsNotLocked) {
             mIsFovEnabled = isFovEnabled;
+        }
     }
 
     @Override

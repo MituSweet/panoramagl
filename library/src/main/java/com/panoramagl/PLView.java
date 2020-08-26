@@ -17,6 +17,7 @@
 
 package com.panoramagl;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -27,6 +28,7 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
@@ -64,6 +66,8 @@ import com.panoramagl.utils.PLLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -2070,8 +2074,9 @@ public class PLView extends Activity implements PLIView, SensorEventListener, On
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mIsRendererCreated && mRenderer.isRunning() && !mIsValidForTransition) {
-            if (mGestureDetector.onTouchEvent(event))
+            if (mGestureDetector.onTouchEvent(event)) {
                 return true;
+            }
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -2084,6 +2089,8 @@ public class PLView extends Activity implements PLIView, SensorEventListener, On
                 case MotionEvent.ACTION_POINTER_UP:
                     this.touchesEnded(this.getTouches(event), event);
                     return true;
+                default:
+                    break;
             }
         }
         return false;

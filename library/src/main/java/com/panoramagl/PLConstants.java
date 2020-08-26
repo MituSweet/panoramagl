@@ -56,7 +56,7 @@ public class PLConstants {
      * texture constants
      */
 
-    public static final int kTextureMaxSize = 2048;
+    public static final int kTextureMaxSize = 8000;
 
     /**
      * renderer constants

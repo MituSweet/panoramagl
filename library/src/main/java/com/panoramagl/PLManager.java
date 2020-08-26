@@ -64,6 +64,9 @@ import com.panoramagl.utils.PLLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -143,6 +146,7 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     private PLViewListener mListener;
     private boolean mIsZoomEnabled;
+    private ScheduledExecutorService scheduled ;
 
     public PLManager(Context context) {
         this.context = context;
@@ -222,8 +226,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
             mAuxiliarStartPoint.setValues(mAuxiliarEndPoint.setValues(0.0f, 0.0f));
             mFovCounter = 0;
             mFovDistance = 0.0f;
-            if (resetCamera && mPanorama != null)
+            if (resetCamera && mPanorama != null) {
                 mPanorama.getCamera().reset(this);
+            }
             this.updateInitialSensorialRotation();
             return true;
         }
@@ -297,8 +302,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
                     mPanorama.releaseView();
                     mPanorama = null;
                 }
-                if (mRenderer != null)
+                if (mRenderer != null) {
                     mRenderer.setInternalScene(null);
+                }
             }
         }
     }
@@ -338,8 +344,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setCamera(PLICamera camera) {
-        if (mPanorama != null && camera != null)
+        if (mPanorama != null && camera != null) {
             mPanorama.setCamera(camera);
+        }
     }
 
     protected NSTimer getAnimationTimer() {
@@ -389,8 +396,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setStartPoint(CGPoint startPoint) {
-        if (startPoint != null)
+        if (startPoint != null) {
             mStartPoint.setValues(startPoint);
+        }
     }
 
     @Override
@@ -400,8 +408,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setEndPoint(CGPoint endPoint) {
-        if (endPoint != null)
+        if (endPoint != null) {
             mEndPoint.setValues(endPoint);
+        }
     }
 
     protected CGPoint getAuxiliarStartPoint() {
@@ -409,8 +418,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
     }
 
     protected void setAuxiliarStartPoint(CGPoint startPoint) {
-        if (startPoint != null)
+        if (startPoint != null) {
             mAuxiliarStartPoint.setValues(startPoint);
+        }
     }
 
     protected CGPoint getAuxiliarEndPoint() {
@@ -418,8 +428,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
     }
 
     protected void setAuxiliarEndPoint(CGPoint endPoint) {
-        if (endPoint != null)
+        if (endPoint != null) {
             mAuxiliarEndPoint.setValues(endPoint);
+        }
     }
 
     @Override
@@ -520,8 +531,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setMinDistanceToEnableScrolling(int minDistanceToEnableScrolling) {
-        if (minDistanceToEnableScrolling >= 0)
+        if (minDistanceToEnableScrolling >= 0) {
             mMinDistanceToEnableScrolling = minDistanceToEnableScrolling;
+        }
     }
 
     @Override
@@ -531,8 +543,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setMinDistanceToEnableDrawing(int minDistanceToEnableDrawing) {
-        if (minDistanceToEnableDrawing > 0)
+        if (minDistanceToEnableDrawing > 0) {
             mMinDistanceToEnableDrawing = minDistanceToEnableDrawing;
+        }
     }
 
     @Override
@@ -591,8 +604,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setNumberOfTouchesForReset(int numberOfTouchesForReset) {
-        if (numberOfTouchesForReset > 2 && numberOfTouchesForReset <= kMaxTouches)
+        if (numberOfTouchesForReset > 2 && numberOfTouchesForReset <= kMaxTouches) {
             mNumberOfTouchesForReset = numberOfTouchesForReset;
+        }
     }
 
     @Override
@@ -602,8 +616,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setShakeThreshold(float shakeThreshold) {
-        if (shakeThreshold > 0.0f)
+        if (shakeThreshold > 0.0f) {
             mShakeThreshold = shakeThreshold;
+        }
     }
 
     @Override
@@ -668,8 +683,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     @Override
     public void setLocked(boolean isLocked) {
-        if (mPanorama != null)
+        if (mPanorama != null) {
             mPanorama.setLocked(isLocked);
+        }
     }
 
     @Override
@@ -688,8 +704,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     protected boolean drawView() {
         if (mIsRendererCreated && mRenderer.isRunning() && mPanorama != null) {
-            if (!mIsValidForFov)
+            if (!mIsValidForFov) {
                 mPanorama.getCamera().rotate(this, mStartPoint, mEndPoint);
+            }
             mGLSurfaceView.requestRender();
             return true;
         }
@@ -703,8 +720,9 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
     @Override
     public boolean startAnimation() {
         if (!mIsAnimating) {
-            if (mRenderer != null)
+            if (mRenderer != null) {
                 mRenderer.start();
+            }
             this.setAnimationTimer
                     (
                             NSTimer.scheduledTimerWithTimeInterval
@@ -731,12 +749,15 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
         if (mIsAnimating) {
             this.stopInertia();
             this.setAnimationTimer(null);
-            if (mRenderer != null)
+            if (mRenderer != null) {
                 mRenderer.stop();
-            if (mCurrentTransition != null)
+            }
+            if (mCurrentTransition != null) {
                 mCurrentTransition.stop();
-            if (mPanorama != null)
+            }
+            if (mPanorama != null) {
                 mPanorama.getCamera().stopAnimation(this);
+            }
             mIsAnimating = mIsValidForTouch = mIsValidForScrolling = mIsValidForFov = false;
             return true;
         }
@@ -754,26 +775,30 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
             mFovCounter++;
             if (mFovCounter < PLConstants.kDefaultFovMinCounter) {
-                if (mFovCounter == PLConstants.kDefaultFovMinCounter - 1)
+                if (mFovCounter == PLConstants.kDefaultFovMinCounter - 1) {
                     mFovDistance = PLMath.distanceBetweenPoints(mAuxiliarStartPoint, mAuxiliarEndPoint);
+                }
                 return false;
             }
 
             float distance = PLMath.distanceBetweenPoints(mAuxiliarStartPoint, mAuxiliarEndPoint), distanceDiff = distance - mFovDistance;
 
-            if (Math.abs(distanceDiff) < mPanorama.getCamera().getMinDistanceToEnableFov())
+            if (Math.abs(distanceDiff) < mPanorama.getCamera().getMinDistanceToEnableFov()) {
                 return false;
+            }
 
             boolean isZoomIn = (distance > mFovDistance), isNotCancelable = true;
 
-            if (mListener != null)
+            if (mListener != null) {
                 isNotCancelable = mListener.onShouldRunZooming(this, distanceDiff, isZoomIn, !isZoomIn);
+            }
 
             if (isNotCancelable) {
                 mFovDistance = distance;
                 mPanorama.getCamera().addFov(this, distanceDiff);
-                if (mListener != null)
+                if (mListener != null) {
                     mListener.onDidRunZooming(this, distanceDiff, isZoomIn, !isZoomIn);
+                }
                 return true;
             }
         }
@@ -788,32 +813,37 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
         int touchCount = touches.size();
         if (touchCount == mNumberOfTouchesForReset) {
             mIsValidForFov = false;
-            if (eventType == PLTouchEventType.PLTouchEventTypeBegan)
+            if (eventType == PLTouchEventType.PLTouchEventTypeBegan) {
                 this.executeResetAction(touches);
+            }
         } else if (touchCount == 2 && isZoomEnabled()) {
             boolean isNotCancelable = true;
-            if (mListener != null)
+            if (mListener != null) {
                 isNotCancelable = mListener.onShouldBeginZooming(this);
+            }
             if (isNotCancelable) {
                 if (!mIsValidForFov) {
                     mFovCounter = 0;
                     mIsValidForFov = true;
                 }
-                if (eventType == PLTouchEventType.PLTouchEventTypeMoved)
+                if (eventType == PLTouchEventType.PLTouchEventTypeMoved) {
                     this.calculateFov(touches);
-                else if (eventType == PLTouchEventType.PLTouchEventTypeBegan) {
+                } else if (eventType == PLTouchEventType.PLTouchEventTypeBegan) {
                     mAuxiliarStartPoint.setValues(touches.get(0).locationInView(mGLSurfaceView));
                     mAuxiliarEndPoint.setValues(touches.get(1).locationInView(mGLSurfaceView));
-                    if (mListener != null)
+                    if (mListener != null) {
                         mListener.onDidBeginZooming(this, mAuxiliarStartPoint, mAuxiliarEndPoint);
+                    }
                 }
             }
         } else if (touchCount == 1) {
             if (eventType == PLTouchEventType.PLTouchEventTypeMoved) {
-                if (mIsValidForFov || (mStartPoint.x == 0.0f && mEndPoint.y == 0.0f))
+                if (mIsValidForFov || (mStartPoint.x == 0.0f && mEndPoint.y == 0.0f)) {
                     mStartPoint.setValues(this.getLocationOfFirstTouch(touches));
-            } else if (eventType == PLTouchEventType.PLTouchEventTypeEnded && mStartPoint.x == 0.0f && mEndPoint.y == 0.0f)
+                }
+            } else if (eventType == PLTouchEventType.PLTouchEventTypeEnded && mStartPoint.x == 0.0f && mEndPoint.y == 0.0f) {
                 mStartPoint.setValues(this.getLocationOfFirstTouch(touches));
+            }
             mIsValidForFov = false;
             return false;
         }
@@ -823,12 +853,14 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
     protected boolean executeResetAction(List<UITouch> touches) {
         if (mIsResetEnabled && touches.size() == mNumberOfTouchesForReset) {
             boolean isNotCancelable = true;
-            if (mListener != null)
+            if (mListener != null) {
                 isNotCancelable = mListener.onShouldReset(this);
+            }
             if (isNotCancelable) {
                 this.reset();
-                if (mListener != null)
+                if (mListener != null) {
                     mListener.onDidReset(this);
+                }
                 return true;
             }
         }
@@ -2078,11 +2110,15 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
 
     public boolean onTouchEvent(MotionEvent event) {
         if (mIsRendererCreated && mRenderer.isRunning() && !mIsValidForTransition) {
-            if (mGestureDetector.onTouchEvent(event))
+            if (mGestureDetector.onTouchEvent(event)) {
                 return true;
+            }
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_POINTER_DOWN:
+                    if (scheduled != null && !scheduled.isShutdown()) {
+                        scheduled.shutdown();
+                    }
                     this.touchesBegan(this.getTouches(event), event);
                     return true;
                 case MotionEvent.ACTION_MOVE:
@@ -2091,6 +2127,7 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_POINTER_UP:
                     this.touchesEnded(this.getTouches(event), event);
+                    setAutoPlay();
                     return true;
             }
         }
@@ -2111,5 +2148,19 @@ public class PLManager implements PLIView, SensorEventListener, OnDoubleTapListe
     @Override
     public boolean onSingleTapConfirmed(MotionEvent event) {
         return false;
+    }
+
+
+    public void setAutoPlay() {
+        final float[] yaw = {getCamera().getYaw()};
+        scheduled = Executors.newScheduledThreadPool(1);
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                yaw[0] += 2;
+                getCamera().rotate(getCamera().getPitch(), getCamera().getPitch(), yaw[0], getCamera().getRoll());
+            }
+
+        }, 200, 100, TimeUnit.MILLISECONDS);
     }
 }
